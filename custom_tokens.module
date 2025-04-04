@@ -1,0 +1,151 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for El Tao Azul module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\file\Entity\File;
+use Drupal\media\Entity\Media;
+use Drupal\Core\Render\BubbleableMetadata;
+
+
+/**
+ *  Implements hook_help().
+ */
+function custom_token_help($route_name, RouteMatchInterface $routeMatch)
+{
+  switch ($route_name) {
+    case 'help.page.custom_token':
+      $output = '';
+      $output .= '<h3>' . t('About El Tao Azul') . '</h3>';
+      $output .= '<p>' . t('This is the global custom_token Custom module') . '</p>';
+      return $output;
+    default:
+  }
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function custom_token_token_info()
+{
+  $info = [];
+
+  // Define a new token type.
+  $info['types']['custom_tokens'] = [
+    'name' => t('Custom Tokens'),
+    'description' => t('A token type for custom tokens.'),
+  ];
+
+  // Define any new tokens.
+  $info['tokens']['custom_tokens']['product_price_amount'] = [
+    'name' => t('Product Price Amount'),
+    'description' => t('Provides the price amount of product.'),
+  ];
+  $info['tokens']['custom_tokens']['lang_code'] = [
+    'name' => t('Language Code'),
+    'description' => t('Provides the language code in xx_XX format.'),
+  ];
+  $info['tokens']['custom_tokens']['media_image_url'] = [
+    'name' => t('Media Image URL'),
+    'description' => t('Retrieves the URL of a media image for metatags.'),
+  ];
+
+
+  return $info;
+}
+
+// metatag token is:
+// [custom_tokens:product_price_amount]
+// [custom_tokens:lang_code]
+// [custom_tokens:field_cover_producto]
+
+
+function custom_token_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata)
+{
+  $replacements = [];
+
+
+  if ($type == 'custom_tokens') {
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'product_price_amount':
+          // Check if product exists and has variations.
+          if (isset($data['commerce_product']) && !empty($data['commerce_product']->getVariations())) {
+            // Get the product variation ID.
+            $variation_id = $data['commerce_product']->getVariations()[0]->id();
+
+            // Load the product variation.
+            $variation = \Drupal::entityTypeManager()->getStorage('commerce_product_variation')->load($variation_id);
+
+            // Get the price.
+            $price = $variation->getPrice();
+
+            // Fetch the value.
+            $amount = $price->getNumber();
+
+            // Add the new token.
+            $replacements[$original] = $amount;
+          }
+          break;
+        case 'lang_code':
+          if (isset($options['langcode'])) {
+            if ($options['langcode'] == 'it') {
+              $replacements[$original] = 'it_IT';
+            }
+            if ($options['langcode'] == 'en') {
+              $replacements[$original] = 'en_EN';
+            }
+            if ($options['langcode'] == 'fr') {
+              $replacements[$original] = 'fr_FR';
+            }
+            if ($options['langcode'] == 'es') {
+              $replacements[$original] = 'es_ES';
+            }
+            if ($options['langcode'] == 'de') {
+              $replacements[$original] = 'de_DE';
+            }
+          }
+          break;
+        case 'media_image_url':
+          // Ottieni l'ID del media o la sorgente dal contesto.
+          $node = $data["node"];
+
+          // Assicurati che il nodo sia caricato correttamente.
+          if ($node && $node->hasField('field_cover')) {
+            // Ottieni i dati del campo field_cover.
+            $field_cover = $node->get('field_cover')->getValue();
+
+            // Controlla se il campo field_cover non è vuoto.
+            if (!empty($field_cover)) {
+              // Estrai l'ID del media collegato.
+              $cover_id = $field_cover[0]['target_id'];
+              $media = \Drupal::entityTypeManager()->getStorage('media')->load($cover_id);
+
+              if (isset($media)) {
+                $image_field = $media->get('field_media_image')->entity;
+
+                if ($image_field instanceof File) {
+                  // Ottieni e assegna l'URL dell'immagine.
+                  $file_url_generator = \Drupal::service('file_url_generator');
+                  $replacements[$original] = $file_url_generator->generateAbsoluteString($image_field->getFileUri());
+                }
+              }
+            } else {
+              // Il campo field_cover è vuoto: aggiungi eventualmente un fallback o un log.
+              \Drupal::messenger()->addMessage('Il campo field_cover è vuoto.', 'warning');
+            }
+          } else {
+            // Il campo field_cover non esiste: aggiungi eventualmente un fallback o un log.
+            \Drupal::messenger()->addMessage('Il nodo non contiene il campo field_cover.', 'error');
+          }
+          break;
+
+      }
+    }
+  }
+
+  return $replacements;
+}

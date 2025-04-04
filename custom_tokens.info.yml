@@ -1,0 +1,5 @@
+name: 'Custom Tokens'
+type: module
+description: 'Custom Tokens global custom module'
+package: Woobiweb
+core_version_requirement: ^10 || ^11
