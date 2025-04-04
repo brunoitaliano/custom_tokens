@@ -34,21 +34,21 @@ function custom_tokens_token_info()
   $info = [];
 
   // Define a new token type.
-  $info['types']['custom_tokenss'] = [
+  $info['types']['custom_tokens'] = [
     'name' => t('Custom Tokens'),
     'description' => t('A token type for custom tokens.'),
   ];
 
   // Define any new tokens.
-  $info['tokens']['custom_tokenss']['product_price_amount'] = [
+  $info['tokens']['custom_tokens']['product_price_amount'] = [
     'name' => t('Product Price Amount'),
     'description' => t('Provides the price amount of product.'),
   ];
-  $info['tokens']['custom_tokenss']['lang_code'] = [
+  $info['tokens']['custom_tokens']['lang_code'] = [
     'name' => t('Language Code'),
     'description' => t('Provides the language code in xx_XX format.'),
   ];
-  $info['tokens']['custom_tokenss']['media_image_url'] = [
+  $info['tokens']['custom_tokens']['media_image_url'] = [
     'name' => t('Media Image URL'),
     'description' => t('Retrieves the URL of a media image for metatags.'),
   ];
@@ -58,9 +58,9 @@ function custom_tokens_token_info()
 }
 
 // metatag token is:
-// [custom_tokenss:product_price_amount]
-// [custom_tokenss:lang_code]
-// [custom_tokenss:field_cover_producto]
+// [custom_tokens:product_price_amount]
+// [custom_tokens:lang_code]
+// [custom_tokens:field_cover_producto]
 
 
 function custom_tokens_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata)
@@ -68,7 +68,7 @@ function custom_tokens_tokens($type, $tokens, array $data, array $options, Bubbl
   $replacements = [];
 
 
-  if ($type == 'custom_tokenss') {
+  if ($type == 'custom_tokens') {
     foreach ($tokens as $name => $original) {
       switch ($name) {
         case 'product_price_amount':
