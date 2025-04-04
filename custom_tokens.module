@@ -14,13 +14,13 @@ use Drupal\Core\Render\BubbleableMetadata;
 /**
  *  Implements hook_help().
  */
-function custom_token_help($route_name, RouteMatchInterface $routeMatch)
+function custom_tokens_help($route_name, RouteMatchInterface $routeMatch)
 {
   switch ($route_name) {
-    case 'help.page.custom_token':
+    case 'help.page.custom_tokens':
       $output = '';
       $output .= '<h3>' . t('About El Tao Azul') . '</h3>';
-      $output .= '<p>' . t('This is the global custom_token Custom module') . '</p>';
+      $output .= '<p>' . t('This is the global custom_tokens Custom module') . '</p>';
       return $output;
     default:
   }
@@ -29,26 +29,26 @@ function custom_token_help($route_name, RouteMatchInterface $routeMatch)
 /**
  * Implements hook_token_info().
  */
-function custom_token_token_info()
+function custom_tokens_token_info()
 {
   $info = [];
 
   // Define a new token type.
-  $info['types']['custom_tokens'] = [
+  $info['types']['custom_tokenss'] = [
     'name' => t('Custom Tokens'),
     'description' => t('A token type for custom tokens.'),
   ];
 
   // Define any new tokens.
-  $info['tokens']['custom_tokens']['product_price_amount'] = [
+  $info['tokens']['custom_tokenss']['product_price_amount'] = [
     'name' => t('Product Price Amount'),
     'description' => t('Provides the price amount of product.'),
   ];
-  $info['tokens']['custom_tokens']['lang_code'] = [
+  $info['tokens']['custom_tokenss']['lang_code'] = [
     'name' => t('Language Code'),
     'description' => t('Provides the language code in xx_XX format.'),
   ];
-  $info['tokens']['custom_tokens']['media_image_url'] = [
+  $info['tokens']['custom_tokenss']['media_image_url'] = [
     'name' => t('Media Image URL'),
     'description' => t('Retrieves the URL of a media image for metatags.'),
   ];
@@ -58,17 +58,17 @@ function custom_token_token_info()
 }
 
 // metatag token is:
-// [custom_tokens:product_price_amount]
-// [custom_tokens:lang_code]
-// [custom_tokens:field_cover_producto]
+// [custom_tokenss:product_price_amount]
+// [custom_tokenss:lang_code]
+// [custom_tokenss:field_cover_producto]
 
 
-function custom_token_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata)
+function custom_tokens_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata)
 {
   $replacements = [];
 
 
-  if ($type == 'custom_tokens') {
+  if ($type == 'custom_tokenss') {
     foreach ($tokens as $name => $original) {
       switch ($name) {
         case 'product_price_amount':

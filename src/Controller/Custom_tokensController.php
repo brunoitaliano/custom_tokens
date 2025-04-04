@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drupal\custom_token\Controller;
+namespace Drupal\custom_tokens\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 
 /**
- * Returns responses for custom_token routes.
+ * Returns responses for custom_tokens routes.
  */
-final class custom_tokenController extends ControllerBase {
+final class custom_tokensController extends ControllerBase {
 
   /**
    * Builds the response.

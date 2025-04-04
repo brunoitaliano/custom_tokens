@@ -1,7 +1,7 @@
-custom_token.hello:
+custom_tokens.hello:
   path: '/hello'
   defaults:
     _title: 'Hello'
-    _controller: '\Drupal\custom_token\Controller\custom_tokenController::hello'
+    _controller: '\Drupal\custom_tokens\Controller\Custom_tokensController::hello'
   requirements:
     _permission: 'access content'
