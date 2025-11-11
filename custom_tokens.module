@@ -137,10 +137,11 @@ function custom_tokens_tokens($type, $tokens, array $data, array $options, Bubbl
               // Il campo field_cover è vuoto: aggiungi eventualmente un fallback o un log.
               \Drupal::messenger()->addMessage('Il campo field_cover è vuoto.', 'warning');
             }
-          } else {
-            // Il campo field_cover non esiste: aggiungi eventualmente un fallback o un log.
-            \Drupal::messenger()->addMessage('Il nodo non contiene il campo field_cover.', 'error');
           }
+//          else {
+//            // Il campo field_cover non esiste: aggiungi eventualmente un fallback o un log.
+//            \Drupal::messenger()->addMessage('Il nodo non contiene il campo field_cover.', 'error');
+//          }
           break;
 
       }
